@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Patient = require('../models/patient')
 const Hospital = require('../models/hospital')
+const Physician = require('../models/physician')
 
 const tokenVerification = async (req, res, next) => {
   console.log('ZZZZZZ', req.headers['x-access-token'])
@@ -25,18 +26,25 @@ const tokenVerification = async (req, res, next) => {
 
       const patientExists = await Patient.findById(tokenAccess.id)
       const hospitalExists = await Hospital.findById(tokenAccess.id)
+      const physicianExists = await Physician.findById(tokenAccess.id)
 
-      console.log(patientExists, hospitalExists, 'TOBO BINE TODO CORRECTO')
+      console.log(
+        patientExists,
+        hospitalExists,
+        physicianExists,
+        'TOBO BINE TODO CORRECTO'
+      )
 
       if (patientExists) {
         next()
       } else if (hospitalExists) {
         next()
+      } else if (physicianExists) {
+        next()
       } else {
         return res.status(404).send({ msg: 'User not found' })
       }
     }
-
   } catch (error) {
     console.log(error)
     return res.status(401).send({ msg: 'The user is not authorized' })

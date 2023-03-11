@@ -1,6 +1,7 @@
 const User = require('../models/user')
 const Patient = require('../models/patient')
 const Hospital = require('../models/hospital')
+const Physician = require('../models/physician')
 const { hashPassword, comparePassword } = require('../helpers/bcryptjs')
 
 const updateUser = async (req, res) => {
@@ -48,18 +49,23 @@ const updateUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   console.log('CACAXXXXXXXXX')
   try {
-    const identification = req.params.id
+    const identification = req.body.identification
     console.log('identification>>>>>>>>>', identification)
 
     const patientToModify = await Patient.findOne({ identification })
     const hospitalToModify = await Hospital.findOne({ identification })
+    const physicianToModify = await Physician.findOne({ identification })
 
-    console.log('userToModify',patientToModify, hospitalToModify)
+    console.log(
+      'userToModify',
+      patientToModify,
+      hospitalToModify,
+      physicianToModify
+    )
 
     if (patientToModify) {
-
       patientToModify.password = await hashPassword(req.body.password)
-      console.log("password",patientToModify.password)
+      console.log('password', patientToModify.password)
 
       const updatedPatient = await patientToModify.save()
 
@@ -74,6 +80,18 @@ const updatePassword = async (req, res) => {
       res
         .status(200)
         .send({ msg: 'Password updated successfully', updatedHospital })
+    } else if (physicianToModify) {
+      physicianToModify.password = await hashPassword(req.body.password)
+
+      if (physicianToModify.isFirstLogin === true) {
+        physicianToModify.isFirstLogin = false
+      }
+      const updatedPhysician = await physicianToModify.save()
+      console.log('aqeui', updatedPhysician)
+
+      res
+        .status(200)
+        .send({ msg: 'Password updated successfully', updatedPhysician })
     }
   } catch (error) {
     res.status(500).send({ msg: 'Error updating the password' })

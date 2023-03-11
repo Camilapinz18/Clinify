@@ -2,29 +2,30 @@ const mongoose = require('mongoose')
 
 const historySchema = new mongoose.Schema({
   id: {
-    type: Number,
+    type: Date,
     required: true,
     unique: true
   },
-  diagnose: {
-    type: String,
-    required: true
+  date:{
+    type:Date,
+    required:true
   },
-  medication: {
-    type: String,
-    required: true
-  },
-  treatment: {
-    type: String,
-    required: true
-  },
-  laboratory: {
-    type: String,
-    required: true
-  },
-  appointment:{
+  physician:{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Appointment',
+    ref: 'Physician',
+    required: true
+  },
+  observations : {
+    type: String,
+    required: true
+  },
+  healthState:{
+    type: String,
+    required: true
+  },
+  patient:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Patient',
     required: true
   }
 

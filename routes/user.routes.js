@@ -8,6 +8,6 @@ const {checkRole}=require('../middlewares/checkRole')
 
 router.patch('/:id', checkAuth,checkRole(['patient','hospital']),validateUpdate, userController.updateUser)
 
-router.patch('/password/:id', checkAuth,checkRole(['patient','hospital']), userController.updatePassword)
+router.put('/password', checkAuth,checkRole(['patient','hospital','physician']), userController.updatePassword)
 
 module.exports = router

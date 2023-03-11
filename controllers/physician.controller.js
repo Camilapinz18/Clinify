@@ -1,4 +1,8 @@
 const Physician = require('../models/physician')
+const transporter = require('../config/nodemailer')
+const { createToken } = require('../helpers/createToken')
+
+
 const specialities = [
   'Anesthesiology',
   'Cardiology',
@@ -56,29 +60,71 @@ const bySpecialityPhysician = async (req, res) => {
 }
 
 const createPhysician = async (req, res) => {
+  console.log('en create')
   try {
     const { identification } = req.body
     const existingPhysician = await Physician.findOne({ identification })
+    console.log('existingPhysician', existingPhysician)
     if (existingPhysician) {
-      res.status(400).send({ msg: 'Physician already exists' })
-    } else {
-      specialityExists = specialities.find(especiality => {
-        return especiality === req.body.speciality
-      })
-      if (!specialityExists) {
-        res.status(400).send({ msg: 'Speciality does not exists. Select a valid speciality' })
-      } else {
-        console.log(specialityExists, 'specialityExists')
-
-        const physician = new Physician(req.body)
-        await physician.save()
-        res.status(200).send({ msg: 'Physician created successfully' })
-      }
+      return res.status(400).send({ msg: 'Physician already exists' })
     }
+
+    const specialityExists = specialities.find(especiality => {
+      return especiality.toLowerCase() === req.body.speciality.toLowerCase()
+    })
+
+    if (!specialityExists) {
+      return res.status(400).send({
+        msg: 'Speciality does not exist. Select a valid speciality'
+      })
+    }
+    
+    const physician = new Physician(req.body)
+
+    console.log('physician before saving to db', physician)
+    const physicianSavedToDb = await physician.save()
+    console.log('physician saved to db', physicianSavedToDb)
+
+    const token = await createToken(physicianSavedToDb)
+
+    try {
+      await transporter.sendMail({
+        from: '"Verify your Clinify account" <camilapinz96@gmail.com>',
+        to: physicianSavedToDb.email,
+        subject: 'Verify your Clinify account',
+        text: 'Este es un mensaje de prueba',
+        html: ` <h1>CLINIFY</h1>
+        <h2>Verify your Clinify account</h2>
+        <br>
+        <h3>Your password to login into your account is ${physicianSavedToDb.identification}</h3>
+        <b>Then, provide the following code:</b>
+        <h2> ${token}</h2>
+        <br>
+        <h4>User information:</h4>
+        <div>
+        <b>Identification:</b> ${physicianSavedToDb.identification}
+        <b>Phone:</b> ${physicianSavedToDb.phone}
+        <b>Email:</b> ${physicianSavedToDb.email}
+        <b>Role:</b> ${physicianSavedToDb.role}
+        </div>`
+      })
+      console.log('email sent')
+    } catch (error) {
+      console.log('error sending email', error)
+      return res.status(500).send({ msg: 'Error sending verification email' })
+    }
+
+    return res.status(200).send({
+      msg: 'Physician created successfully',
+      physicianSavedToDb,
+      token
+    })
   } catch (error) {
-    res.status(500).send({ msg: 'Error creating the Physician' })
+    console.log('error creating physician', error)
+    return res.status(500).send({ msg: 'Error creating the Physician' })
   }
 }
+
 
 const updatePhysician = async (req, res) => {
   try {

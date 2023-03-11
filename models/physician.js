@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { hashPassword, comparePassword } = require('../helpers/bcryptjs')
 
 const physicianSchema = new mongoose.Schema({
   identification: {
@@ -21,6 +22,24 @@ const physicianSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
+  },
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  password:{
+    type:String,
+    default: function () {
+      return this.identification
+    }
+  },
+  role: {
+    type: String,
+    default: 'physician'
+  },
+  isFirstLogin:{
+    type:Boolean,
+    default:true
   }
 })
 

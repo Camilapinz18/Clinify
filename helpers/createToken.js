@@ -1,9 +1,13 @@
 const jwt = require('jsonwebtoken')
 
 const createToken = async user => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT, {
-    expiresIn: 28800 /**8 horas */
-  })
+  return jwt.sign(
+    { id: user._id, identification: user.identification, role: user.role },
+    process.env.JWT,
+    {
+      expiresIn: 28800 /**8 horas */
+    }
+  )
 }
 
 const verifyToken = async token => {

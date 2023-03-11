@@ -1,37 +1,127 @@
 const History = require('../models/history')
+const Physician = require('../models/physician')
+const Patient = require('../models/patient')
+const { createPDF } = require('../helpers/pdfCreator')
 const cheerio = require('cheerio')
 const axios = require('axios')
 
 const allHistories = async (req, res) => {
   try {
     const histories = await History.find()
+      .populate('physician')
+      .populate('patient')
     res.status(200).send(histories)
   } catch (error) {
     res.status(500).send({ msg: 'Error retrieving the clinic histories' })
   }
 }
 
-const byIdHistory = async (req, res) => {
+const byPatientIdHistory = async (req, res) => {
+  // Este endpoint solo lo puede usar el paciente
+
   try {
-    const patients = await Patient.find()
-    res.status(200).send(patients)
+    const identification = req.params.id
+
+    const patientExists = await Patient.findOne({
+      identification: identification
+    })
+
+    console.log(
+      'patientExists__',
+      patientExists.identification,
+      '___patientExist'
+    )
+
+    if (patientExists) {
+      const histories = await History.find({
+        patient: patientExists._id
+      }).populate('patient').populate('physician')
+
+      console.log('histories', histories)
+
+      /**********pdf */
+      //  let dataToPrint = []
+
+      //  histories.map(history => {
+      //    dataToPrint.push({
+      //     historyDate:history.date,
+      //     physicianName:history.physician.name,
+      //     physicianIdentification:history.physician.identification,
+      //     speciality:history.physician.speciality
+      //    })
+      //  })
+
+      //  console.log("DATA TO PRINT",dataToPrint)
+
+      // const stream = res.writeHead(200, {
+      //   'Content-Type': 'application/pdf',
+      //   'Content-Disposition': `attachment;filename=history_${patientExists.identification}.pdf`
+      // })
+      // createPDF(
+      //   chunk => stream.write(chunk),
+
+      //   dataToPrint,
+      //   () => stream.end()
+      // )
+
+      res.status(200).send(histories)
+    } else {
+      res.status(404).send({ msg: "Patient doesn't exist" })
+    }
   } catch (error) {
-    res.status(500).send({ msg: 'Error retrieving the patients' })
+    res.status(500).send({ msg: "Error retrieving the patient's history" })
   }
 }
 
 const createHistory = async (req, res) => {
   try {
-    const { identification } = req.body
-    const existingPatient = await Patient.findOne({ identification })
-    if (existingPatient) {
-      res.status(400).send({ msg: 'Patient already exists' })
+    const { physician, patient } = req.body
+
+    console.log('tttttt!', physician, patient)
+
+    const patientExists = await Patient.findOne({
+      identification: patient
+    })
+    const physicianExists = await Physician.findOne({
+      identification: physician
+    })
+
+    if (patientExists && physicianExists) {
+      const history = new History({
+        id: new Date(),
+        date: new Date(),
+        physician: physicianExists,
+        observations: req.body.observations,
+        healthState: req.body.healthState,
+        patient: patientExists
+      })
+
+      console.log('gisotru', history)
+      try {
+        const historyCreated = await history.save()
+        console.log('historyCreated', historyCreated)
+
+        res
+          .status(200)
+          .send({ msg: 'History created successfully', historyCreated })
+      } catch (error) {
+        console.log('error', error)
+        res
+          .status(400)
+          .send({ msg: 'Error creating the hisdtory', historyCreated })
+      }
+    } else {
+      res.status(404).send({ msg: 'Physician or patient not found' })
     }
-    const patient = new Patient(req.body)
-    await patient.save()
-    res.status(200).send({ msg: 'Patient created successfully' })
+
+    // const existingPatient = await Patient.findOne({ identification })
+    // if (existingPatient) {
+    //   res.status(400).send({ msg: 'Patient already exists' })
+    // }
+    // const patient = new Patient(req.body)
+    // await patient.save()
   } catch (error) {
-    res.status(500).send({ msg: 'Error creating the patient' })
+    res.status(500).send({ msg: 'Error creating the History' })
   }
 }
 
@@ -134,7 +224,7 @@ const getLabsByFirstLetter = async (req, res) => {
 
 module.exports = {
   allHistories,
-  byIdHistory,
+  byPatientIdHistory,
   createHistory,
   updateHistory,
   deleteHistory,

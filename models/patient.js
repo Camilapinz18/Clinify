@@ -35,6 +35,7 @@ const patientSchema = new mongoose.Schema({
   dob: {
     type: Date
   }
+  
 })
 
 const Patient = mongoose.model('Patient', patientSchema)
