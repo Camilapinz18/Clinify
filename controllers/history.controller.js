@@ -49,25 +49,25 @@ const byPatientIdHistory = async (req, res) => {
 
       console.log('histories', histories)
 
-      const clinicHistory={
-        patient:{
-          identification:histories[0].patient.identification,
-          email:histories[0].patient.email,
-          phone:histories[0].patient.phone,
+      const clinicHistory = {
+        patient: {
+          identification: histories[0].patient.identification,
+          email: histories[0].patient.email,
+          phone: histories[0].patient.phone
         },
-        historyItem:[
+        historyItem: [
           {
-            date:histories[0].date,
-            speciality:histories[0].physician.speciality,
-            physician:histories[0].physician.name,
-            observations:histories[0].observations,
-            labs:histories[0].labs,
-            healthState:histories[0].healthState
+            date: histories[0].date,
+            speciality: histories[0].physician.speciality,
+            physician: histories[0].physician.name,
+            observations: histories[0].observations,
+            labs: histories[0].labs,
+            healthState: histories[0].healthState
           }
         ]
       }
 
-      console.log("clinicHistory",clinicHistory)
+      console.log('clinicHistory', clinicHistory)
       const historyItem = {
         shipping: {
           name: 'John Doe',
@@ -96,7 +96,6 @@ const byPatientIdHistory = async (req, res) => {
         invoice_nr: 1234
       }
 
-
       try {
         createPDF(histories)
       } catch (error) {
@@ -106,7 +105,7 @@ const byPatientIdHistory = async (req, res) => {
       res.status(200).send(histories)
 
       /**********pdf *******************/
-      
+
       //  let dataToPrint = []
 
       //  histories.map(history => {
@@ -238,6 +237,46 @@ const fetchLabsByLetter = async letter => {
   }
 }
 
+const fetchLabsInfo = async urls => {
+  try {
+    const preparations = []
+    console.log("ULRRRRR",urls)
+
+    await Promise.all(
+      urls.map(async url => {
+        const urlToSearch = url.url
+        const dataLabs = await axios.get(urlToSearch)
+        const $ = await cheerio.load(dataLabs.data)
+
+        const labName=$(`.page-title`).text().trim()
+        console.log("labName>>>>>>>>>>>>>>>>ññññ",labName)
+
+        $(`.main> section>.mp-content>h2`).each((index, item) => {
+          let title = $(item).text()
+
+          if (
+            title.includes('need') &&
+            title.includes('anything') &&
+            title.includes('prepare')
+          ) {
+            const parentElement = $(item).parent()
+            const text = parentElement.find('p:first').text()
+            preparations.push({
+              lab:labName,
+              preparation:text
+            })
+          }
+        })
+      })
+    )
+    console.log("PREPARATIONSBEFORE SEND",preparations)
+    return preparations
+  } catch (error) {
+    console.error(error)
+    throw new Error('An error occurred while fetching labs data.')
+  }
+}
+
 const createHistory = async (req, res) => {
   //Este endpoint solo lo puedo usar el medico
   try {
@@ -258,24 +297,44 @@ const createHistory = async (req, res) => {
       const allLabsByLetter = await fetchLabsByLetter()
 
       let labsToShow = []
+      let urls = []
 
       allLabsByLetter.map(lab => {
-        labsToShow.push(lab.lab)
+        //console.log("_______",lab)
+        labsToShow.push({
+          lab: lab.lab,
+          url: lab.url
+        })
       })
 
-      console.log('labsToShow___', labsToShow)
+      //console.log('labsToShow___', labsToShow)
 
       const randNumber = Math.round(
         Math.random() * Math.round(labsToShow.length / 2)
       )
-      console.log('randNumber', randNumber)
+      //console.log('randNumber', randNumber)
 
       const labsToAdd = []
       for (let i = 0; i < randNumber; i++) {
         labsToAdd[i] = labsToShow[i]
       }
 
-      console.log('labsToAdd', labsToAdd)
+      const labsInfo = await fetchLabsInfo(labsToAdd)
+    
+     
+
+      const labsInformation = labsToAdd.map((lab, index) => {
+        return {
+          name: lab.lab,
+          preparation: labsInfo[index]
+        }
+      });
+
+
+      console.log('LBASINFOOOOO', labsInformation)
+
+      //console.log('labsToAdd', labsToAdd)
+
       //const randomLabs=
 
       if (allLabsByLetter.length > 0) {
@@ -287,7 +346,7 @@ const createHistory = async (req, res) => {
           observations: req.body.observations,
           healthState: req.body.healthState,
           patient: patientExists,
-          labs: labsToAdd
+          labs: labsInfo
         })
 
         console.log('gisotru', history)

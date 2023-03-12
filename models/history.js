@@ -29,7 +29,7 @@ const historySchema = new mongoose.Schema({
     required: true
   },
   labs:{
-    type:[String]
+    type:[]
   }
 
 
