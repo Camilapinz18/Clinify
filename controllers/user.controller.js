@@ -7,8 +7,6 @@ const { hashPassword, comparePassword } = require('../helpers/bcryptjs')
 const updateUser = async (req, res) => {
   try {
     const identification = req.params.id
-    console.log('identification', identification)
-
     const patientToModify = await Patient.findOne({
       identification: identification
     })
@@ -23,8 +21,6 @@ const updateUser = async (req, res) => {
     } else if (hospitalToModify) {
       userToModify = hospitalToModify
     }
-
-    console.log(patientToModify, hospitalToModify, 'userToModify')
 
     if (userToModify) {
       switch (userToModify.role) {
@@ -50,7 +46,6 @@ const updateUser = async (req, res) => {
 
       try {
         const updatedUser = await userToModify.save()
-        console.log('estoy aca', updatedUser)
         res.status(200).send({ msg: 'User updated successfully', updatedUser })
       } catch (error) {
         console.log('ERROR', error)

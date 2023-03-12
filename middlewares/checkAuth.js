@@ -11,8 +11,6 @@ const checkAuth = async (req, res, next) => {
 
     if (token) {
       const tokenVerified = await verifyToken(token)
-      console.log(tokenVerified)
-
       if (tokenVerified.id) {
         next()
       } else {

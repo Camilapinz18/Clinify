@@ -1,14 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { validatePhysician } = require('../validators/validators')
+const { validatePhysician } = require('../validators/validatePhysician')
 const physicianController = require('../controllers/physician.controller')
 const {checkAuth}=require('../middlewares/checkAuth')
 const {checkRole,checkRoleWithoutId}=require('../middlewares/checkRole')
 
-//router.get('/', physicianController.allPhysicians)
-//router.get('/:id', physicianController.byIdPhysician)
 router.post('/', checkAuth,checkRoleWithoutId(['hospital']),validatePhysician, physicianController.createPhysician)
-//router.put('/:id', validatePhysician, physicianController.updatePhysician)
-//router.delete('/:id', physicianController.deletePhysician)
 
 module.exports = router

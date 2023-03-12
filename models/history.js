@@ -31,8 +31,6 @@ const historySchema = new mongoose.Schema({
   labs:{
     type:[]
   }
-
-
 })
 
 const History = mongoose.model('History', historySchema)

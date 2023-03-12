@@ -5,8 +5,6 @@ const historyController = require('../controllers/history.controller')
 const { checkAuth } = require('../middlewares/checkAuth')
 const { checkRole,checkRoleWithoutId } = require('../middlewares/checkRole')
 
-router.get('/', historyController.allHistories)
-
 router.get(
   '/patient/:id',
   checkAuth,
@@ -47,8 +45,5 @@ router.post(
   validateHistory,
   historyController.createHistory
 )
-
-//router.put('/:id', historyController.updateHistory)
-//router.delete('/:id', historyController.deleteHistory)
 
 module.exports = router

@@ -3,7 +3,6 @@ const Patient = require('../models/patient');
 const Hospital = require('../models/hospital');
 const Physician = require('../models/physician');
 
-// version 1: accepts roles and idToAllow parameters
 const checkRole = (roles, idToAllow) => async (req, res, next) => {
   try {
     let token = null;
@@ -15,7 +14,6 @@ const checkRole = (roles, idToAllow) => async (req, res, next) => {
 
     if (token) {
       const tokenVerified = await verifyToken(token);
-
       const patientAuthorized = await Patient.findOne({ identification: tokenVerified.id });
       const hospitalAuthorized = await Hospital.findOne({ identification: tokenVerified.id });
       const physicianAuthorized = await Physician.findOne({ identification: tokenVerified.id });
@@ -42,7 +40,6 @@ const checkRole = (roles, idToAllow) => async (req, res, next) => {
   }
 };
 
-// version 2: accepts roles only
 const checkRoleWithoutId = (roles) => async (req, res, next) => {
   try {
     let token = null;
@@ -62,7 +59,6 @@ const checkRoleWithoutId = (roles) => async (req, res, next) => {
       let userAuthorized = '';
       patientAuthorized ? (userAuthorized = patientAuthorized) : hospitalAuthorized ? (userAuthorized = hospitalAuthorized) : physicianAuthorized ? (userAuthorized = physicianAuthorized) : '';
 
-      console.log("USER AUTHORIZED",userAuthorized)
       if ([].concat(roles).includes(userAuthorized?.role)) {
         next();
       } else {

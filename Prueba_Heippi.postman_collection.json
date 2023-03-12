@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "06508f31-c6de-4347-aa34-56fc9d810b14",
+		"name": "Prueba_Heippi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24294274"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\":\"12121212\",\r\n    \"password\":\"Miclave1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MGJlNjYxNWNiNzQwOTRkNDIxNDJlYiIsImlhdCI6MTY3ODUwMTQ3MywiZXhwIjoxNjc4NTMwMjczfQ.iIoDw7t1AHW641wJlbqkQ8EpPJRMX7n2-cy9Znt8tfo",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\": \"12121212\",\r\n    \"password\": \"Miclave1\",\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMTIxMjEyIiwicm9sZSI6InBoeXNpY2lhbiIsImlhdCI6MTY3ODYzNTA3MywiZXhwIjoxNjc4NjYzODczfQ.kBY0Z8gw5byzcEusfJT8BvANWyG5maNHIcfVLJ8uX0U\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\":\"88889999\",\r\n    \"password\":\"Miclave1\",\r\n    \"phone\":\"3015103265\",\r\n    \"email\":\"camilapinz18@gmail.com\",\r\n    \"role\":\"patient\"\r\n}\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "update user",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4ODg5OTk5Iiwicm9sZSI6InBhdGllbnQiLCJpYXQiOjE2Nzg2MzUyNDksImV4cCI6MTY3ODY2NDA0OX0.MgYvQJoDe7C9ypnilsJtI1f5wPGj1oGpnlfoxxIX748",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Luis Emiliano Poveda\",\r\n    \"address\":\"cra 67 #90-34\",\r\n    \"dob\":\"1975-03-12T18:16:45.123456Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/88889999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"88889999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMTIxMjEyIiwicm9sZSI6InBoeXNpY2lhbiIsImlhdCI6MTY3ODYzNTAxMywiZXhwIjoxNjc4NjYzODEzfQ.a83s8aXZvGFhq8hnfu1aW3GH-DZ-bkWuYE7-yZY9ako",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\":\"12121212\",\r\n    \"password\":\"Miclave1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/password/12121212",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"password",
+								"12121212"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Physician",
+			"item": [
+				{
+					"name": "create physician",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAxMTExIiwicm9sZSI6Imhvc3BpdGFsIiwiaWF0IjoxNjc4NjM0NzM0LCJleHAiOjE2Nzg2NjM1MzR9.djWanz-r5T_pbwO_GMzLbYNHkps78tTt4TuqeggtV-c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\":\"34324324\",\r\n    \"name\":\"Carola Pelaez\",\r\n    \"speciality\":\"Anesthesiologgy\",\r\n    \"phone\":\"3261452031\",\r\n    \"email\":\"camilapinz18@gmail.com\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/physicians/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"physicians",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Histories",
+			"item": [
+				{
+					"name": "create history",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMTIxMjEyIiwicm9sZSI6InBoeXNpY2lhbiIsImlhdCI6MTY3ODYzNTYwNywiZXhwIjoxNjc4NjY0NDA3fQ.xEHfdqoZydgmK82krC6KyzSjKPs4QUpwxl-4CgLPBMg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"physician\":\"12121212\",\r\n    \"patient\":\"88889999\",\r\n    \"observations\":\"Durante la evaluación preoperatoria, se determinó que el paciente era un candidato adecuado para la anestesia general. Se le explicó los riesgos y beneficios de la anestesia, así como las posibles complicaciones. El paciente entendió y firmó el consentimiento informado.\",\r\n    \"healthState\":\"Optimo\",\r\n    \"labs\":[]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/histories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"histories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get byPatientIdHistory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4ODg5OTk5Iiwicm9sZSI6InBhdGllbnQiLCJpYXQiOjE2Nzg2MzU2NzcsImV4cCI6MTY3ODY2NDQ3N30.WkCev--ipXINegF54Ybod2dQcjcoaO1tFgk1IjbC8aQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/histories/patient/88889999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"histories",
+								"patient",
+								"88889999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get byPhysicianIdHistory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMTIxMjEyIiwicm9sZSI6InBoeXNpY2lhbiIsImlhdCI6MTY3ODYzNTgwOSwiZXhwIjoxNjc4NjY0NjA5fQ.EcdR0ljpZwaz33p6grfG9jNO8kZE50HvTeDtAkP6K9Y",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/histories/physician/12121212",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"histories",
+								"physician",
+								"12121212"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get byHospitalIdHistory",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAxMTExIiwicm9sZSI6Imhvc3BpdGFsIiwiaWF0IjoxNjc4NjM1NzM2LCJleHAiOjE2Nzg2NjQ1MzZ9._PD3mhYVPpwGZDXjfJqE4WiJNetgfqpZ4uLBZNpkmVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/histories/hospital/00001111",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"histories",
+								"hospital",
+								"00001111"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

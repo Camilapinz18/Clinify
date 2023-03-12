@@ -1,21 +1,20 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
+  host: process.env.NODEMAILER_HOST,
+  port: process.env.NODEMAILER_PORT,
   secure: true,
-  service: 'gmail',
+  service: process.env.NODEMAILER_SERVICE,
   auth: {
-    user: 'camilapinz96@gmail.com',
-    pass: 'hnvlzqsryecqcwcu'
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
   }
-})
+});
 
-transporter.verify().then(()=>{
-    console.log("Nodemailer Ready")
-}).catch((err)=>{
-    console.log("Error: ", err)
-})
+transporter.verify().then(() => {
+  console.log("Nodemailer Ready");
+}).catch((err) => {
+  console.log("Error: ", err);
+});
 
-
-module.exports=transporter
+module.exports = transporter;
