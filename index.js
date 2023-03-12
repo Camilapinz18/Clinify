@@ -15,16 +15,16 @@ app.use(morgan('dev'))
 const authRoutes=require('./routes/auth.routes')
 const patientRoutes=require('./routes/patient.routes')
 const historyRoutes=require('./routes/history.routes')
-
 const physicianRoutes=require('./routes/physician.routes')
 const userRoutes=require('./routes/user.routes')
+const labRoutes=require('./routes/labs.routes')
 
 app.use('/api/v1/auth',authRoutes)
 app.use('/api/v1/patients',patientRoutes)
 app.use('/api/v1/histories',historyRoutes)
-
 app.use('/api/v1/physicians',physicianRoutes)
 app.use('/api/v1/users',userRoutes)
+app.use('/api/v1/labs',labRoutes)
 
 
 /*Server and DB*/

@@ -27,7 +27,11 @@ const historySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Patient',
     required: true
+  },
+  labs:{
+    type:[String]
   }
+
 
 })
 

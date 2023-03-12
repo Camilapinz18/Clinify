@@ -16,14 +16,14 @@ const checkAuth = async (req, res, next) => {
       if (tokenVerified.id) {
         next()
       } else {
-        console.log('hieputaaaaaaaaaaaaaaaa')
         res.status(401).send({ msg: 'User unauthorized' })
       }
     } else {
       res.status(401).send({ msg: 'Token missing' })
     }
   } catch (error) {
-    console.log(error)
+    console.log("checkautherror",error)
+    res.status(401).send({ msg: 'Invalid token' })
   }
 }
 

@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const { validateUser,validateLogin } = require('../validators/validators')
+const { validateLogin, validateSignup } = require('../validators/validateAuth')
 const authController = require('../controllers/auth.controller')
-const {tokenVerification} = require('../middlewares/tokenVerification')
+const { checkAuth } = require('../middlewares/checkAuth')
+const { checkRole } = require('../middlewares/checkRole')
 
 router.post('/login', validateLogin, authController.login)
-router.post('/signup', validateUser, authController.signup)
-router.post('/verify', tokenVerification,validateLogin, authController.verifyAccount)
-
+router.post('/signup', validateSignup, authController.signup)
+router.post('/verify', checkAuth, validateLogin, authController.verifyAccount)
 
 module.exports = router

@@ -1,38 +1,53 @@
-const nodemailer = require('nodemailer')
+const transporter = require('../config/nodemailer')
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user:"camilapinz18@gmail.com",
-    pass: "Jackson19721"
-  }
-})
+const sendEmailVerification = async (user, token) => {
+  await transporter.sendMail({
+    from: '"Clinify Accounts" <camilapinz96@gmail.com>',
+    to: user.email,
+    subject: 'Verify your Clinify account',
+    text: 'Este es un mensaje de prueba',
+    html: ` <h1>CLINIFY</h1>
+              <h2>Verify your Clinify account</h2>
+              <br>
+              <span>Login into your account and provide the following code:</span>
+              <h2> ${token}</h2>
+              <br>
+              <h4>User information:</h4>
+              <div>
+              <b>Identification:</b> ${user.identification}
+              <b>Phone:</b> ${user.phone}
+              <b>Email:</b> ${user.email}
+              <b>Role:</b> ${user.role}
+              </div>`
+  })
 
-const sendMailVerification = emailTo => {
-  console.log('mailto', emailTo)
-  transporter.sendMail(
-    {
-      from: process.env.EMAIL,
-      to: emailTo,
-      subject: 'Prueba de envío de correo electrónico',
-      text: 'Este es un mensaje de prueba'
-    },
-    (error, info) => {
-      if (error) {
-        console.error(error)
-      } else {
-        console.log('Correo electrónico enviado:', info.response)
-      }
-    }
-  )
+  console.log('Email successfully sent')
 }
 
-module.exports = transporter
+const sendEmailInformation = async user => {
+  await transporter.sendMail({
+    from: '"Clinify Accounts" <camilapinz96@gmail.com>',
+    to: user.email,
+    subject: 'Verify your Clinify account',
+    text: 'Este es un mensaje de prueba',
+    html: ` <h1>CLINIFY</h1>
+              <h2>Verify your Clinify account</h2>
+              <br>
+              <span>Your account has been created. Please login into Clinify with the following credentials:
+              </span>
+              <h3>Identification: ${user.identification}</h3>
+              <h3>Password: ${user.password}</h3>
+              
+              <h4>User information:</h4>
+              <div>
+              <b>Identification:</b> ${user.identification}
+              <b>Phone:</b> ${user.phone}
+              <b>Email:</b> ${user.email}
+              <b>Role:</b> ${user.role}
+              </div>`
+  })
 
-// const twilio = require('twilio');
+  console.log('Email successfully sent')
+}
 
-// const accountSid = process.env.ACCOUNT_SID;
-// const authToken = process.env.AUTH_TOKEN;
-// const client = new twilio(accountSid, authToken);
-
-// module.exports=client
+module.exports = { sendEmailVerification, sendEmailInformation }

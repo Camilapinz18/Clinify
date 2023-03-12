@@ -64,12 +64,7 @@ const validateUpdate = [
   }
 ]
 
-const validateLogin = [
-  check('identification')
-    .exists()
-    .withMessage('Identification is needed to Login'),
-  check('password').exists().withMessage('Password is needed to Login')
-]
+
 
 const validateData = [
   check('identification')
@@ -171,38 +166,7 @@ const validateHospital = [
   }
 ]
 
-const validateHistory = [
-  check('diagnose')
-    .exists()
-    .not()
-    .isEmpty()
-    .isString()
-    .withMessage('Please enter a valid medication'),
-  check('medication')
-    .exists()
-    .not()
-    .isEmpty()
-    .isString()
-    .withMessage('Please enter a valid medication'),
 
-  check('treatment')
-    .exists()
-    .not()
-    .isEmpty()
-    .isString()
-    .withMessage('Please enter a valid treatment'),
-
-  check('laboratory')
-    .exists()
-    .not()
-    .isEmpty()
-    .isString()
-    .withMessage('Please enter a valid laboratory'),
-
-  (request, response, next) => {
-    validateResult(request, response, next)
-  }
-]
 
 const validateAppointment = [
   // check('date')
@@ -273,9 +237,8 @@ const validatePhysician = [
 module.exports = {
   validateUser,
   validateUpdate,
-  validateLogin,
   validateData,
-  validateHistory,
+
   validateHospital,
   validateAppointment,
   validatePhysician

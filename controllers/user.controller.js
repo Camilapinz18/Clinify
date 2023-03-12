@@ -9,93 +9,100 @@ const updateUser = async (req, res) => {
     const identification = req.params.id
     console.log('identification', identification)
 
-    const patientToModify = await Patient.findOne({ identification })
-    const hospitalToModify = await Hospital.findOne({ identification })
+    const patientToModify = await Patient.findOne({
+      identification: identification
+    })
+    const hospitalToModify = await Hospital.findOne({
+      identification: identification
+    })
 
-    console.log(patientToModify, patientToModify, 'userToModify')
+    let userToModify
 
     if (patientToModify) {
-      patientToModify.name = req.body.name
-
-      patientToModify.address = req.body.address
-      patientToModify.dob = req.body.dob
-
-      res
-        .status(200)
-        .send({ msg: 'patient updated successfully', patientToModify })
+      userToModify = patientToModify
     } else if (hospitalToModify) {
-      hospitalToModify.name = req.body.name
-      hospitalToModify.address = req.body.address
-      console.log(req.body.services)
+      userToModify = hospitalToModify
+    }
 
-      req.body.services.map(service => {
-        hospitalToModify.services.push(service)
-      })
+    console.log(patientToModify, hospitalToModify, 'userToModify')
 
-      hospitalToModify.services = [...new Set(hospitalToModify.services)]
+    if (userToModify) {
+      switch (userToModify.role) {
+        case 'patient':
+          userToModify.name = req.body.name
+          userToModify.address = req.body.address
+          userToModify.dob = req.body.dob
+          break
 
-      const updatedHospital = await hospitalToModify.save()
+        case 'hospital':
+          userToModify.name = req.body.name
+          userToModify.address = req.body.address
 
-      res
-        .status(200)
-        .send({ msg: 'hospital updated successfully', hospitalToModify })
+          req.body.services.map(service => {
+            userToModify.services.push(service)
+          })
+
+          userToModify.services = [...new Set(userToModify.services)]
+
+        default:
+          break
+      }
+
+      try {
+        const updatedUser = await userToModify.save()
+        console.log('estoy aca', updatedUser)
+        res.status(200).send({ msg: 'User updated successfully', updatedUser })
+      } catch (error) {
+        console.log('ERROR', error)
+      }
     }
   } catch (error) {
-    res.status(500).send({ msg: 'Error creating the hospital' })
-    console.log(error.errors)
+    res.status(500).send({ msg: 'Error updating the user' })
+    console.log(error)
   }
 }
 
 const updatePassword = async (req, res) => {
-  console.log('CACAXXXXXXXXX')
   try {
-    const identification = req.body.identification
-    console.log('identification>>>>>>>>>', identification)
+    const identification = req.params.id
 
     const patientToModify = await Patient.findOne({ identification })
     const hospitalToModify = await Hospital.findOne({ identification })
     const physicianToModify = await Physician.findOne({ identification })
 
-    console.log(
-      'userToModify',
-      patientToModify,
-      hospitalToModify,
-      physicianToModify
-    )
+    let userToModify
 
     if (patientToModify) {
-      patientToModify.password = await hashPassword(req.body.password)
-      console.log('password', patientToModify.password)
-
-      const updatedPatient = await patientToModify.save()
-
-      res
-        .status(200)
-        .send({ msg: 'Password updated successfully', updatedPatient })
+      userToModify = patientToModify
     } else if (hospitalToModify) {
-      hospitalToModify.password = await hashPassword(req.body.password)
-
-      const updatedHospital = await hospitalToModify.save()
-
-      res
-        .status(200)
-        .send({ msg: 'Password updated successfully', updatedHospital })
+      userToModify = hospitalToModify
     } else if (physicianToModify) {
-      physicianToModify.password = await hashPassword(req.body.password)
+      userToModify = physicianToModify
+    }
 
-      if (physicianToModify.isFirstLogin === true) {
-        physicianToModify.isFirstLogin = false
+    let updatedUser = ''
+    if (userToModify) {
+      if ((userToModify.role = 'physician')) {
+        userToModify.password = await hashPassword(req.body.password)
+
+        if (userToModify.isFirstLogin === true) {
+          userToModify.isFirstLogin = false
+        }
+        updatedUser = await userToModify.save()
+      } else {
+        userToModify.password = await hashPassword(req.body.password)
+        console.log('password', userToModify.password)
+
+        updatedUser = await userToModify.save()
       }
-      const updatedPhysician = await physicianToModify.save()
-      console.log('aqeui', updatedPhysician)
 
       res
         .status(200)
-        .send({ msg: 'Password updated successfully', updatedPhysician })
+        .send({ msg: 'Password updated successfully', updatedUser })
     }
   } catch (error) {
     res.status(500).send({ msg: 'Error updating the password' })
-    console.log(error.errors)
+    console.log(error)
   }
 }
 
