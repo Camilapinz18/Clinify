@@ -40,6 +40,11 @@ const physicianSchema = new mongoose.Schema({
   isFirstLogin:{
     type:Boolean,
     default:true
+  },
+  hospital:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Hospital',
+    required: true
   }
 })
 

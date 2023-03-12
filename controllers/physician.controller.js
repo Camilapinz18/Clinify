@@ -1,6 +1,7 @@
 const Physician = require('../models/physician')
+const Hospital = require('../models/hospital')
 const { sendEmailInformation } = require('../helpers/sendEmailVerification')
-const { createToken } = require('../helpers/createToken')
+const { createToken, verifyToken } = require('../helpers/createToken')
 
 const specialities = [
   'Anesthesiology',
@@ -74,18 +75,43 @@ const createPhysician = async (req, res) => {
       })
     }
 
-    const physician = new Physician(req.body)
-    const physicianSavedToDb = await physician.save()
+    //Add Hospital:
+    const token = req.headers['x-access-token']
+    const tokenVerified = await verifyToken(token)
+    console.log('tokenVerified>>>>>>>>,', tokenVerified.id)
+
     try {
-     // const token = await createToken(physicianSavedToDb)
-      sendEmailInformation(physicianSavedToDb)
+      const hospitalExists = await Hospital.findOne({
+        identification: tokenVerified.id
+      })
+
+      console.log('hopsital found', hospitalExists)
+
+      if (hospitalExists) {
+        const physician = new Physician({
+          identification:req.body.identification,
+          name:req.body.name,
+          speciality:req.body.speciality,
+          phone:req.body.phone,
+          email:req.body.email,
+          hospital:hospitalExists._id          
+        })
+
+        const physicianSavedToDb = await physician.save()
+        try {
+          // const token = await createToken(physicianSavedToDb)
+          sendEmailInformation(physicianSavedToDb)
+        } catch (error) {
+          return res.status(500).send({ msg: 'Error sending info email' })
+        }
+        return res.status(200).send({
+          msg: 'Physician created successfully',
+          physicianSavedToDb
+        })
+      }
     } catch (error) {
-      return res.status(500).send({ msg: 'Error sending info email' })
+      console.log('9E', error)
     }
-    return res.status(200).send({
-      msg: 'Physician created successfully',
-      physicianSavedToDb
-    })
   } catch (error) {
     return res.status(500).send({ msg: 'Error creating the Physician' })
   }
@@ -129,11 +155,11 @@ const createPhysician = async (req, res) => {
 // }
 
 module.exports = {
-  createPhysician,
+  createPhysician
   // allPhysicians,
   // byIdPhysician,
   // bySpecialityPhysician,
- 
+
   // updatePhysician,
   // deletePhysician
 }

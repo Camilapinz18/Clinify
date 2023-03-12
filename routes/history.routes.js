@@ -17,7 +17,25 @@ router.get(
   historyController.byPatientIdHistory
 )
 
+router.get(
+  '/physician/:id',
+  checkAuth,
+  (req, res, next) => {
+    const id = req.params.id
+    checkRole(['physician'], id)(req, res, next)
+  },
+  historyController.byPhysicianIdHistory
+)
 
+router.get(
+  '/hospital/:id',
+  checkAuth,
+  (req, res, next) => {
+    const id = req.params.id
+    checkRole(['hospital'], id)(req, res, next)
+  },
+  historyController.byHospitalIdHistory
+)
 
 router.post(
   '/',
