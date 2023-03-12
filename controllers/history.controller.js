@@ -49,7 +49,64 @@ const byPatientIdHistory = async (req, res) => {
 
       console.log('histories', histories)
 
-      /**********pdf */
+      const clinicHistory={
+        patient:{
+          identification:histories[0].patient.identification,
+          email:histories[0].patient.email,
+          phone:histories[0].patient.phone,
+        },
+        historyItem:[
+          {
+            date:histories[0].date,
+            speciality:histories[0].physician.speciality,
+            physician:histories[0].physician.name,
+            observations:histories[0].observations,
+            labs:histories[0].labs,
+            healthState:histories[0].healthState
+          }
+        ]
+      }
+
+      console.log("clinicHistory",clinicHistory)
+      const historyItem = {
+        shipping: {
+          name: 'John Doe',
+          address: '1234 Main Street',
+          city: 'San Francisco',
+          state: 'CA',
+          country: 'US',
+          postal_code: 94111
+        },
+        items: [
+          {
+            item: 'TC 100',
+            description: 'Toner Cartridge',
+            quantity: 2,
+            amount: 6000
+          },
+          {
+            item: 'USB_EXT',
+            description: 'USB Cable Extender',
+            quantity: 1,
+            amount: 2000
+          }
+        ],
+        subtotal: 8000,
+        paid: 0,
+        invoice_nr: 1234
+      }
+
+
+      try {
+        createPDF(histories)
+      } catch (error) {
+        console.log(error)
+      }
+
+      res.status(200).send(histories)
+
+      /**********pdf *******************/
+      
       //  let dataToPrint = []
 
       //  histories.map(history => {
@@ -73,8 +130,6 @@ const byPatientIdHistory = async (req, res) => {
       //   dataToPrint,
       //   () => stream.end()
       // )
-
-      res.status(200).send(histories)
     } else {
       res.status(404).send({ msg: "Patient doesn't exist" })
     }
@@ -112,7 +167,6 @@ const byPhysicianIdHistory = async (req, res) => {
 
       console.log('histories', histories)
 
-    
       res.status(200).send(histories)
     } else {
       res.status(404).send({ msg: "Physician doesn't exist" })
@@ -123,38 +177,37 @@ const byPhysicianIdHistory = async (req, res) => {
 }
 const byHospitalIdHistory = async (req, res) => {
   try {
-    const identification = req.params.id;
-    const hospitalExists = await Hospital.findOne({ identification });
+    const identification = req.params.id
+    const hospitalExists = await Hospital.findOne({ identification })
 
     if (!hospitalExists) {
-      return res.status(404).send({ msg: "Hospital doesn't exist" });
+      return res.status(404).send({ msg: "Hospital doesn't exist" })
     }
 
     const physicians = await Physician.find({
-      hospital: hospitalExists._id,
-    }).populate('hospital');
+      hospital: hospitalExists._id
+    }).populate('hospital')
 
     const historiesByHospital = await Promise.all(
-      physicians.map(async (physician) => {
+      physicians.map(async physician => {
         const histories = await History.findOne({
-          physician: physician._id,
+          physician: physician._id
         })
           .populate('physician')
           .populate({ path: 'physician', populate: { path: 'hospital' } })
-          .populate('patient');
+          .populate('patient')
 
-        return histories;
+        return histories
       })
-    );
+    )
 
     historiesByHospital.shift()
-    res.status(200).send(historiesByHospital);
+    res.status(200).send(historiesByHospital)
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ msg: "Error retrieving the hospital's histories" });
+    console.log(error)
+    res.status(500).send({ msg: "Error retrieving the hospital's histories" })
   }
-};
-
+}
 
 const fetchLabsByLetter = async letter => {
   try {
